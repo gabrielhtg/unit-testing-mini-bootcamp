@@ -375,6 +375,36 @@ public class ApiMainTest {
     }
 
     @Test
+    public void testFindAddedItem() {
+        String json = """
+                {
+                   "name": "Apple MacBook Pro 16",
+                   "data": {
+                      "year": 2019,
+                      "price": 1849.99,
+                      "CPU model": "Intel Core i9",
+                      "Hard disk size": "1 TB"
+                   }
+                }
+                """;
+        try {
+            Item item = objectMapper.readValue(apiMain.addItem(json).body(), Item.class);
+
+            Item getItem = objectMapper.readValue(apiMain.getOneItem(item.getId()).body(), Item.class);
+
+            Assertions.assertNotNull(getItem);
+            Assertions.assertNotNull(getItem.getId());
+            Assertions.assertEquals("Apple MacBook Pro 16", getItem.getName());
+            Assertions.assertEquals(1849.99, getItem.getData().get("price"));
+            Assertions.assertEquals("Intel Core i9", getItem.getData().get("CPU model"));
+            Assertions.assertEquals("1 TB", getItem.getData().get("Hard disk size"));
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     public void testAddItemMouse() {
         String json = """
                 {
